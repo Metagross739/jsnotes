@@ -1,0 +1,645 @@
+Backticks (` `)are part of template literals, inroduced in JS ES6. It allows you to write javaScript expression, inside the string. you have to mention, your js expressions or variable names, in ${} 
+
+eg-
+
+books = {
+  author: "J.R.R.Tolkein",
+  book: "The Lord of The Rings",
+  published date: "1954-01-02"
+}
+
+const {auhtor, book, published-date} = books;
+
+const info = `Long Long time ago, their was a writer called ${author}, who wrote a legendary book called ${book}, it was published on ${published-date.split("-")[0]}`;
+
+
+'Long Long time ago, their was a writer called J. R. R. Tolkien, who wrote a legendary book called The Lord of the Rings, it was published on 1954'
+
+
+//function declaratiom
+
+function getYear(str){
+  return str.split('-')[0];
+}
+
+console.log(getYear(publicationDate));
+
+//fuction expression
+
+const getAnotherYear = (str) => str.split('-')[0];
+
+//function expression actually starts from () which can be also called as nameless function.
+//In fucntion expression, if wrote inline, no need to specify the return keyword.
+
+console.log(getAnotherYear(publicationDate));
+
+
+//short curcitting.
+// && operator.
+
+//if any variable has falsy values like
+//falsy: 0, null, '', undefined.
+
+const push = false;
+
+console.log(push && "some string");
+
+//as you can look above, since push value is false, the interpreter does not even look at other condition and breaks the circuit and returns false.
+
+const rony = true;
+
+console.log(rony && "some string 2+2");
+
+//now you see here, since rony variable dosent have any, falsy value specified above, it returns a "some string". 
+//hence wherenver if a  variable has a truthy values, and not falsy values, the condition after the && operator will get excute.
+
+map function
+
+map is a method that operates on each element of an array. It goes thorugh each element of an array, opearates whatever expression written in callback function. And once went thorugh all elements, it returns a new copy of an array.
+
+In order to return two are more values of object in an array do this.
+
+arr.map(el => ({
+ title: book.title,
+ author: book.author
+}));
+
+Fileter function
+
+filter function also goes through the, array and call the callback function and expression inside it on each and every element. The major usecase of filter function is, it can be used for writing, true or false expression and then getting a copy as per the result.
+
+const y = arr.filter(el => el > 5);
+console.log(y);
+
+**IMP 
+If we use map function with true or false expression with map method, it does not returns actual values like Filter function, rather it returns a true or false.
+
+const z = arr.map(el => el < 5);
+console.log(z);
+
+[ true, false, false, false, false ]
+
+You can chain filter method and map together, filter just filters out data, where as map can specficaly, add those values, which you want in an array.
+
+you can use multiper filter method for number of tasks.
+
+const y = arr.filter(el => el > 5).filter(el => el < 10);
+console.log(y);
+
+[ 6, 7 ]
+
+You can also use fitler and map together.
+
+const data = books.filter(book => books.gneres.)
+
+reduce funtion
+
+reduce function actually, also operates over array and object. But it also contain two more additonal properties, we can specify the intial value, and an accumulator, variable, which will contain a value, that could get's acumulated as we loop thourgh untill be reach the end of an object or an array. The starting value of the accumulaator will always be, the initial value specified.
+
+const BookPages = info.reduce((sum, book) => sum + book.pages, 0);
+console.log(BookPages);
+
+pushkaar@R-X550LC:~/Desktop/course-react/02-jafundamentals$ node script.js
+3227
+
+Sort function
+
+sorts the array. it takes two arguments (a,b) and we have to do a-b for ascending order  and b-a for descneding order.
+
+But sort, function directly mutates the orignial array hence, we have to use slice() it returns a copy of an aray.
+
+const sorted = arr.slice().sort((a,b) => a-b);
+console.log(sorted);
+
+this is gnerally a good practicse.
+
+//General Thumb rules.
+
+We use, spread operator to add object to exsisting array.
+
+const data = [...book, newObj];
+
+We use filter method to delete, or remove the unwanted object from array. Rememeber .filter() method is not directly resposnible to remove or dlete, its the conditon we write like of, !includes("push"), here objects containin push propery will not be included. and an entire new copy of array with out push object will be created.
+
+const data = arr.filter(el => el.id !== 3);
+
+we use map method to update, the array.
+
+const data = arr.map(book => book.id === 1 ? {...book, pages: 1000} : book)
+
+//What you see, with this gnenreal rule of thumb is, you do not mututae the orignial array. Thereby not breaking the original data Structure.
+
+//if you want to specifically, get something from array of objects, lets say you want to get list of arrays, which each object has inside this array of objects. Then you use .map() function.
+
+const info = getBooks();
+
+const genreArray = info.map(book => book.genres);
+console.log(genreArray); 
+
+by this you can get array from each object, from array objects called info. 
+
+But it returns the, list of arrays. what if you just want a single array and not list or nested array. then we use .flat();
+
+const genreArray = info.map(book => book.genres).flat();
+console.log(genreArray); 
+
+By this you will have a single array of elements.
+
+//optional chaining
+
+const book = {
+  title: "Example Book",
+  translations: {
+    spanish: "Ejemplo de libro",
+    french: "Livre exemple",
+    // No 'bengali' property
+  }
+};
+
+const bengaliTranslation = book.translations?.bengali;
+console.log(bengaliTranslation); // Output: undefined
+
+Optional Chaining Check:
+
+book.translations?. first checks if book.translations is neither null nor undefined.
+If book.translations is null or undefined, the entire expression short-circuits and evaluates to undefined, skipping the attempt to access .bengali.
+Accessing the Property:
+
+If book.translations is a valid object (i.e., it is neither null nor undefined), then .bengali is accessed.
+If the bengali property exists within book.translations, its value is returned.
+If the bengali property does not exist within book.translations, undefined is returned.
+
+Optional Chaining, allows uss, to acess the nested object safely. Even if certain object or is proprty doesnt have value which we are trying to acess, rather throwing error, it would throw undefined or null. which we also fruthr customise, with custom error by placing null colasceing operator (??).
+
+where book.translations?.bengali??"not data dound"
+
+here in the above expression if. book.translations does not exsist or is empty, undefined will be returned and null-colasceing operator has a property where if it encoounters  null or undefined property it will return the second property which is this case is "no data dound".
+
+//IMP rememeber JAVASCRIPT IS ALL ABOUT CONNECTING MULTIPLE FUNCTIONS AND OPERATORS TOGETHER THAT"S HOW JS IS WRITTEN NOW A DAYS.
+
+//if you want to return an object from an inline expression. Then you have to wrap it with () paenthesis. Because without that, it will be treated as a block of code, which is expects a return keyword, which is not included in an inline expression. Below is the correct method mention in .mapO() to reutrn a object.
+const TitleNames = information.filter(book => book.genres.includes("adventure")).map((book) => ({title: book.title, author: book.author}));
+
+
+Async await function.
+
+if any function is declared as async, it will always retain a promis. so you need to put .then() resolve promis code always you can also reolve this promis by using await key word.
+
+async function getNumber() {
+  return 42;
+}
+
+// Using .then()
+getNumber().then(value => console.log(value)); // Output: 42
+
+// Using await
+async function printNumber() {
+  const number = await getNumber();
+  console.log(number); // Output: 42
+}
+
+printNumber();
+
+
+both works perfectly fine.
+
+Also, anything return inside async function has, an await keyword attached to it.$
+
+async function example() {
+  console.log('Start');
+  await new Promise(resolve => setTimeout(resolve, 1000)); // Waits 1 second
+  console.log('End');
+}
+
+In the example provided, the sequence is as follows:
+
+Start is logged first: This happens immediately when the function is called.
+
+The function pauses at await: The await expression pauses the execution of the async function until the Promise resolves. This does not block other code outside the async function from running.
+
+After the await resolves, End is logged: Once the Promise resolves, the code after await continues executing.
+
+
+//JSX, 
+
+JSX is actually a declarative syntax, of how atually the component would appear on the web canvas. Each functional component must return a JSX.
+
+JSX is nothing but an embded, JS,CSS and React into HTML.
+
+But then how does Browser understands JSX?
+
+The Browser actually, does not understand, JSX. It only understands, HTML and It's tags. Hence their is a tool called as Babel which comes under, deault react packgae, which converts JSX into JS code, which we gnereally write in script tags. 
+Which is understood by the browser.
+
+Props.
+
+Props are immutable, and can only be changed by the parent components. 
+
+State variable are mutable, and can be directly mutate by its local compoent.
+
+But what if state varible are passed in as a prop to a child compoent. Which needs to be updated inside child compoent. Listen this is IMP
+
+You should not still update the state variable directly in child component rather you should use a callback function every time. to update the state vribale. or rather directly pass a function as a prop to child component which updates the state variable. 
+
+How It Works
+Parent Component: Holds the state and passes it as a prop to the child component.
+
+Child Component: Receives the prop and uses it, but cannot change it directly.
+
+Updating State: If the child component needs to update the state, it should communicate this intention to the parent component (e.g., via a callback function passed as a prop), which can then update its state accordingly.
+
+
+**IMP
+
+You should not write like this
+
+<button onClick={increment(5)}>Increase Count by 5</button>
+
+rather you should write like this
+
+<button onClick={() => increment(5)}>Increase Count by 5</button>
+
+The very big reason for that is,
+
+
+you should not use <button onClick={increment(5)}>Increase Count by 5</button>.
+
+Here's why:
+
+Explanation
+<button onClick={increment(5)}>:
+
+This approach immediately calls the increment(5) function when the component renders, not when the button is clicked.
+
+The function increment(5) is executed during render, and the result (which is likely undefined if increment doesn't return anything) is assigned to onClick, which is not what you want.
+
+Whereas,
+
+<button onClick={() => increment(5)}>:
+
+This approach defines an inline arrow function that calls increment(5) when the button is clicked.
+The () => increment(5) function is not executed until the button is clicked, which is the intended behavior.
+
+
+
+
+**IMP
+
+React has a One Way Data Flow, Means data, can only flow from parent to childeren and not the other way arround.
+
+
+JSX Rules.
+
+{} you can use these brackets to write JS expression in jsx. also you cannot write if/for/else statment inside {}. But you can write JSX anywhere, even in if statement.
+
+Conditional return.
+
+Although component must return only one JSX. But it can also be conditoned return statment.
+Like, you can write annother return statement, above the JSX, and it will return it. seamlessly.
+
+if(isOpen) return "Hey i made it!!!"
+
+return(
+ jsx
+);
+
+so one of these statments will return. Although majorily use it in, when components based on condition are rendered.
+
+We can also use ternary operator to render Componenets.
+
+()? <order /> : "Hey Come again"
+
+//IMP
+
+We can conditonally render classNames as well, using {`and terniary operators`}.
+
+In JSX, we use camecase, to use className, onClick, and maymore. 
+
+If you want to add, the inline style for an element in JSx.We use {{then write CSS, and this will be trated as an object.}}
+
+{If you are writng JS already inside a bracket you no need to mention antoher { to write JS Here one bracket is enough}}
+
+//IMP
+
+A gnereal observation
+
+setCounter(counter++) will work too slow and you might have to click more than once.
+
+But if you do setCounter(Count + 1) will work perfectly on time. Actually the case here is, react does no do the manual updation. hence react provides setCounter method, a functional way of updating.
+
+You should not even do,const val = counter++ setCounter(val); this won't work, although it wont give any error.
+
+//IMP
+
+React is declarative and not Imperative. Imperative, means directly updating or handling or manipulating Original canvas DOM Model.
+
+Since react is declarative, it does not to direct DOM manipulations.
+
+Hence whever, a state is changed, react renreders all the components. And it also keeps track of elements, previous state.
+
+//States 
+
+When you have to change the state of a variable, based on the current state.
+this is how you do it.
+
+  function DecCounter() {
+    if (counter === 1) {
+      return setCounter(s => s);
+    }
+    setCounter(s => s - 1);
+  }
+  function InCounter() {
+    if (counter === 3) {
+      return setCounter(s => s);
+    }
+
+    setCounter(s => s + 1);
+    setTest({ name: "Fred" })
+  }
+  
+ 
+ //Date
+ 
+ const date= new Date();
+ 
+ date.setDate(date.getDate() + counter);
+ 
+ date.toDateString();
+ 
+ toDateString() actually gives, a proper date like "MON 30 JUN 2024"
+ 
+ //Remember this logic
+ 
+ function Form(){
+  return(
+    <form className="add-form">
+      <h3>Where Are You Going ??</h3>
+      <select>
+        {Array.from({length:20}, (_,i) => i+1).map((num) => (
+          <option value={num} key={num}>
+            {num}
+          </option>
+        ))}
+      </select>
+      <input type="text" placeholder="Item..."></input>
+      <button>Add</button>
+    </form>
+  );
+}
+
+//DOM
+
+Document Object Model actually controls, the input and select elements. Hence as using react we want entire control with react application.
+
+Hence onChange={} event is used. With useState, hooks to handle the data or state of those elements.
+
+//IMP
+
+if in OnClick={deleteItem} if you directly mention the function name, then it would call the function with event. But if we need to pass certain arguments to function, then we would require OnClick={() => deleteItem(items.id)} a callback function which further calls the deleteItem() and then pass arguments through it.
+
+//IMP
+
+Don't try to directly change values, in react like it's an ill practicse, also sometimes compnents won't directly render if it has an dependency.
+
+like this
+
+function Item({item, handleDeleteItem, handleTravelItems}){
+  
+  return(
+    <li>
+        <input type="checkbox" onChange={() => !item.packed} />
+        <span style={item.packed ? {textDecoration: "line-through"}: {}}>
+          {item.quantity} {item.description}
+        </span>
+        <button onClick={()=> ( handleDeleteItem(item.id))}>❌</button>
+    </li>
+  
+  );
+}
+
+here i directly tried to inverse the value, just by clicking on the checkbox. But it drectly won't render the component. As the item object is inside an statevariable called as travelData which is an array of objects. drirectly inveresing !item.packed wont update the state and, would cause major drawback issues and would not casue re-render the component, and the updated state would not be visible on the webpage.
+
+so here's an updated code
+
+function Item({item, handleDeleteItem, handleTravelItems}){
+  
+  return(
+    <li>
+        <input type="checkbox" onChange={() => handleTravelItems(item.id)} />
+        <span style={item.packed ? {textDecoration: "line-through"}: {}}>
+          {item.quantity} {item.description}
+        </span>
+        <button onClick={()=> ( handleDeleteItem(item.id))}>❌</button>
+    </li>
+  
+  );
+}
+
+export default function App(){
+  const [travelData, setTravelData] = useState([]);
+  function handleTravelItems(id){
+    setTravelData(item => item.map(el => el.id === id ? {...el, packed:true}: el));
+  }
+  return(
+    <div className="app">
+      <Logo />
+      <Form travelTask={setTravelData} travelData={travelData} />
+      <PackingList travelData={travelData} travelTask={setTravelData} handleTravelItems={handleTravelItems} />
+      <Stats />
+    </div>
+  );
+}
+
+since travelData has an updated list and, it rendeers the component, when the state of the UI Changes it correct and with industry aligned practise.
+
+//Deriving State
+
+When, the data you need to maintain, is already present with state mentioned in your code. And you no need to update that state anymore, just need to acess the state data. Then derive that state, do not create another state.
+
+Remember, creating another state means, every time state is created, the page re-renders. So have an minimalistic yet a realistic approach.
+
+//IMP
+
+If theirs a one conditon, where if they stuff happens you don't at all want to return any JSX, hence you write a return statment above the JSX, and let component return something different.
+
+//Learn Logics in this Code
+
+  function handleDeleteItem (id){
+    travelTask(travelItems => travelItems.filter(item => item.id !== id));
+  }
+  return(
+    <div className="list">
+      <ul>
+        {sortedItems.map(item => (
+        <Item item={item} key={item.id} handleDeleteItem={handleDeleteItem} handleTravelItems={handleTravelItems}/>
+        ))}
+      </ul>
+      <select value={sortBy} className="actions" onChange={e => setSortBy(e.target.value)}>
+        <option value="input">Sort By input</option>
+        <option value="description">Sort By description</option>
+        <option value="packed">Sort By packed status</option>
+      </select>
+    </div>
+  );
+}
+
+OPtion values are text, but we are maintaing, the selected options value as a state. hence whenver the value is changed the entire componet is changed.
+
+//PRO Tip. 
+
+if you do not get, why is the state being handeled over here rahter, just updating the varibale. Just remember that, entire component will be rerendered. And then you will start having the basic idea why.
+
+just like before. I was doing !item.packed inverse. So that i could only see the packed items. But it was not updating the state and so not, rerendering the page, so we could see the fesh updated page. 
+
+So i did handleChange(items.id) where this function further directly updates the array using map method. and we see new rendered list.
+
+//Children Prop.
+
+
+Children is a reserved keyword, where it is received by any component. children variable value is anything between two closing tags.
+
+
+like
+
+<Button><span>emoji</sapn> Power of Life</Button>
+
+function Button({children}){
+  {children} so here children value will be emoji in span element and Power of life text. Which will be directly displayed on the canvas.
+  
+Children Prop is majorly used to, create more reusable components.
+}
+
+//OnSubmit
+
+onSubmit always, reloads the page, when submitted as per the events behaviour. But in singlepage application we do not want the page to reload again hence. always use e.preventDefault() for submit event.
+
+//Also you mention onSubmit={handleform}. Hence this submit event is triggered when we click on any button given in the form. How i don't know.
+
+//Never pass a state, directly to a Component from main app. If theirs a setState work inside a component, create a function which will handle the state, in parent componet. And then pass this function as a state. This will create module reusability and, will let you add more features more convineitly.
+
+like this
+
+export default function App(){
+  const [isOpen, setIsOpen] = useState(false);
+  const [allFriends, setAllFriends] = useState(initialFriends);
+  function handleisOpen(){
+    setIsOpen((show) => !show);
+  }
+  function AddFriend(friend){
+    setAllFriends(prev => [...prev, friend]);
+    setIsOpen(false);
+  }
+  return(
+    <div className='app'>
+      <div className='sidebar'>
+        <FriendList allFriends={allFriends} />
+        <FormAddFriend formOpen={isOpen} AddFriend={AddFriend}/>
+        <Button onClick={handleisOpen}>{isOpen ? 'Close' : 'Add friend'}</Button>
+      </div>
+      <FormSplitBill />
+    </div>
+  );
+}
+
+function FormAddFriend({formOpen, AddFriend}){
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("https://i.pravatar.cc/48");
+
+  function handleFormData(e){
+    e.preventDefault();
+    const id = crypto.randomUUID();
+    if(!name || !image) return;
+    const newFriend = {
+      id,
+      name,
+      image: `${image}?u=${id}`,
+      balance:0
+    }
+    AddFriend(newFriend);
+    setName("");
+    setImage("https://i.pravatar.cc/48");
+  }
+
+  return(
+    <div>
+
+    {formOpen && (
+    <form className="form-add-friend" onSubmit={handleFormData}>
+    <label>👩‍❤️‍👨Friend name</label>
+    <input type="text" value={name} onChange={(e) => setName(e.target.value)}/>
+
+    <label>👤Image url</label>
+    <input type="text" value={image} onChange={(e) => setImage(e.target.value)}/>
+
+    <Button>Add</Button>
+    </form>)}
+
+    </div>
+  );
+}
+
+
+//IMP function to study
+
+  function handleSplitBill(value){
+    setAllFriends(prevArry => prevArry.map(friend => friend.id === selectedFriend.id ? {...friend, balance: friend.balance + value}: friend))
+  }
+
+
+  //IMP With regards to input filed.
+
+  IF you mentioned a value property for input filed, you must also give onChange={} property otherwise it would only be readOnly. value proprty gvies you more controlled appraoch.
+  
+  
+  //replicate google docs
+  
+  import React, { useState, useEffect, useRef } from 'react';
+
+const AutoSaveEditor = () => {
+  const [text, setText] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const controllerRef = useRef(new AbortController());
+
+  const autoSave = () => {
+    setIsSaving(true);
+
+    // Save the text to localStorage
+    localStorage.setItem('autoSavedText', text);
+    console.log('Auto-saved to localStorage');
+
+    setIsSaving(false);
+  };
+
+  const handleChange = (e) => {
+    setText(e.target.value);
+    
+    // Abort previous auto-save request
+    controllerRef.current.abort();
+    controllerRef.current = new AbortController(); // Create a new controller for the next save
+
+    // Start a new timer for auto-save
+    setTimeout(() => {
+      autoSave();
+    }, 2000); // Auto-save after 2 seconds of inactivity
+  };
+
+  useEffect(() => {
+    // Load text from localStorage when the component mounts
+    const savedText = localStorage.getItem('autoSavedText');
+    if (savedText) {
+      setText(savedText);
+    }
+  }, []);
+
+  return (
+    <div>
+      <textarea value={text} onChange={handleChange} />
+      {isSaving && <p>Saving...</p>}
+    </div>
+  );
+};
+
+export default AutoSaveEditor;
+
+
+

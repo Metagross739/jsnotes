@@ -1,0 +1,121 @@
+//How to stop unecessary renders by not using any memo or useCallbacks()
+
+We can pass the component as a { children } to other compoenent. Since the component is passed in as children, the ParentComponent: Renders its children as-is, without modifying or causing side effects. Because the parent component does not affect this children with any kind of state or prop change. Hencr it get renderes as is and, does not re-renders when parent set gets updated.
+
+const ParentComponent = ({ children }) => {
+  return <div>{children}</div>;
+};
+
+  return (
+    <div>
+      <ParentComponent>
+        <MyComponent />
+      </ParentComponent>
+      <button onClick={() => setState(state + 1)}>Update State</button>
+    </div>
+  );
+  
+//Memoization
+
+Memoization is an optimization technique that,executes a pure fucntion once and saves the result in a memory. If the inuput does not change from the original or the inital one then,already cached result will get returned and if the new inputs are provided then absolutely new result will be returned.
+
+THis same phylosophy is, itroduced in react. Where if the props passed to the compoenet does not change, then the component will not re-render after the first inital render. if the props change the component will re-render.
+
+useMemo = wrap the object with useMemo, useMemo memoize the object value.
+
+useCallback = wrap the fuction with useCallback fucntion, it memoize the entire function.
+
+this two usecases are required, whenever a dependecny is created, where these non premitive datayes are recreated on every render, hence causing re-render of uncessary components. Both of these have dependcy arrays, whenver a depndcy changes these functions would make the component render.
+
+the memoised component will stil re-render if its own state or a context which its subscribed to changes.
+
+//useCallback()
+
+import React, { useState, useCallback } from 'react';
+
+const ChildComponent = React.memo(({ onClick }) => {
+  console.log('ChildComponent rendered');
+  return <button onClick={onClick}>Click me</button>;
+});
+
+const ParentComponent = () => {
+  const [count, setCount] = useState(0);
+
+  const increment = useCallback(() => {
+    setCount((prevCount) => prevCount + 1);
+  }, []);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <ChildComponent onClick={increment} />
+    </div>
+  );
+};
+
+In this example, increment is memoized using useCallback, ensuring that the same function instance is passed to ChildComponent on every render, unless dependencies change. This prevents ChildComponent from re-rendering unnecessarily.
+
+// React.memo() vs useMemo()
+
+Key Differences
+Purpose:
+
+React.memo(): Prevents a functional component from re-rendering if its props haven't changed.
+useMemo(): Memoizes the result of a computation to avoid re-running expensive calculations on every render.
+Usage Context:
+
+React.memo(): Used as a higher-order component to wrap functional components.
+useMemo(): Used within functional components to memoize values.
+Functionality:
+
+React.memo(): Performs shallow comparison of props.
+useMemo(): Recomputes the memoized value based on dependency changes.
+Combined Usage Example
+You can combine both React.memo() and useMemo() for optimal performance in a React application:
+
+javascript
+Copy code
+import React, { useState, useMemo } from 'react';
+
+const MyComponent = React.memo(({ items }) => {
+  const total = useMemo(() => {
+    console.log('Calculating total');
+    return items.reduce((sum, item) => sum + item, 0);
+  }, [items]);
+
+  console.log('MyComponent rendered');
+  return <div>Total: {total}</div>;
+});
+
+const ParentComponent = () => {
+  const [items, setItems] = useState([1, 2, 3]);
+
+  const addItem = () => {
+    setItems([...items, items.length + 1]);
+  };
+
+  return (
+    <div>
+      <MyComponent items={items} />
+      <button onClick={addItem}>Add Item</button>
+    </div>
+  );
+};
+
+export default ParentComponent;
+
+//Drawbacks of memo
+
+Non-primitive values (objects, arrays, functions) are compared by reference.
+
+React does a shallow comparison.
+
+When you pass objects, arrays, or functions as props, React.memo compares their references. If the reference changes, React.memo will re-render the component, even if the contents of the object or array are the same.
+
+since every object or function is recreated everytime, of render. By default if certain objects and functions are written in default app component in itself, a new refrence in the meomory is created every time of render and react does a memory refrence comparison not a value comparison. And hence it is now a new refrence memory than a previous one, the compoenent re-renders even if it is specified as memo. Hence we use useCallback and useMemo
+
+react SetState function, does not require a memoizing using useCallback() as react understands they are stable.
+
+
+
+

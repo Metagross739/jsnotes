@@ -1,0 +1,977 @@
+Intermediate React.
+
+//How to split UI into components.
+
+You have to split the UI based on component size. Nor too big nor to small small components should be their.
+
+Suppose theirs a card, which has slider, an image, a Add to favouirte tag an, info, a like button, a price tag.
+
+So you should think of, component resuability. like button and price tag are reusable buttons so they would be considered as a sperate components. You get the idea do you.
+
+Also don't make unecessary components, for small small things which does not have resuability and logic.
+
+//4 criteria of splitting UI components.
+
+1) Logic criteria/ should be their
+
+2) reusability
+
+3) responsiblities/ complexities of component.
+
+4) Your own coding style
+
+//Naturally components will always fall into 3 categories.
+
+Stateless/Components/Or Presentational Componenet. --this can be a Logo, which does not have any state
+
+Statefull/Components -- Like Or MovieList, which incorporates Movies, Input, this component state will be controlled.
+
+Structural/Components -- Structural components like Pages, layouts, or screens that compose all other components and an be huge and nonreusable. 
+
+//Component Resuability.
+
+function NavBar(){
+return <nav>
+	<input>
+	<MovieResult>
+</nav>
+
+}
+
+Here we cannot reuse NavBar. As whenver we include navBar component elsewhere the, input and movieresult will always come with it thus, reducing the resuability.
+
+Hence what we do is use a {children} prop.
+
+export default function App() {
+  const [movies, setMovies] = useState(tempMovieData);
+  return (
+    <>
+      <NavBar>
+        <MovieSearch />
+        <MovieResults movies={movies} />
+
+      </NavBar>
+      <Main movie={movies} />
+    </>
+  );
+}
+
+function NavBar({children}) {
+
+
+  return (
+    <nav className="nav-bar">
+      <Logo />
+      {children}
+    </nav>
+  );
+}
+
+As you can see, we replaced the NavBar() function code with child prop. And moved all the child component to App and passed them as a children to NavBar. Hence we can always reuse NavBar alone, whenver we want. Also we can add or remove the fields we do not want on navbar. and it will function more smoothly.
+
+//Implicit and explicit passing.
+
+//passing children
+
+  return (
+    <>
+      <NavBar>
+        <MovieSearch />
+        <MovieResults movies={movies} />
+      </NavBar>
+      <Main>
+        <Box>
+          <MovieList movie={movies} />
+        </Box>
+        <Box>
+          <WatchedSummary watched={watched} />
+          <WatchedMovieList watched={watched} />
+        </Box>
+      </Main>
+    </>
+  );
+  
+//passing elements as a props.
+
+        <Box element={<MovieList movie={movies} />} />
+        <Box 
+        element={
+        <>
+          <WatchedSummary watched={watched} />
+          <WatchedMovieList watched={watched} />
+        </>
+        }
+       />
+       
+ just make sure while passing elements, you should do function Box({element}) and not children.
+ 
+ regardless both are behind the scens similar use case. Just make sure that, children or element is used to make component reusability as a main propoganda.
+ 
+ //Wrting inline CSS in react.
+ 
+ const containerStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "16px"
+}
+const starContainerStyle = {
+    display: "flex",
+    gap: "4px"
+}
+function StarRating(props) {
+..
+.
+.
+
+Always write these CSS objects outside the compoents as when components are rendered these will not again get initalised, hence saving us a good performance.
+
+Also <div style={{}} like this if you are wrting inplace CSS
+or you can dirctley do style={containerStyle} as it was declared outside. in React inline CSS must be declare inside object. You can do it by inline {{}} or outside and then specify the name {contaierStyle}
+
+//IMP
+
+Also React does not accept a normal CSS syntax. it needs a camel Case. like normal css line-height: "1",
+but in react it will be lineHeight: "1".
+
+
+//Study this code
+
+                {Array.from({length: 5}, (_,i) => (
+                    <span>S{i+1}</span>
+                ))}
+                
+       This code creates an array first with length 5, its emtpy then a call back function is places, the '_' specifies the current element, i specifies the current index, and the your expression. In this case we dont want to do anything wtih the current element, hence '_' rather we want to calculate the index hence <span>S{i+1}</span>. Although this is just tmeprory. This means, when we plave star component here, i times will star print over here.
+       
+
+//JS Object destructuring and props.
+
+function StarRating({maxRating = 5}) {
+
+    return (
+        <div style={containerStyle}>
+            <div style={starContainerStyle}>
+                {Array.from({length: maxRating}, (_,i) => (
+                    <span>S{i+1}</span>
+                ))}
+            </div>
+            <p style={textStyle}>{maxRating}</p>
+        </div>
+    );
+}
+
+As per the JS, rules if maxRating value is not passed to the <StarRating/> component. then by default value of maxRating would be 5. Thus making sure not breaking the component and providing better component reusability.
+       
+ //React Fragment
+ 
+ In React, a fragment is a way to group multiple JSX elements and return them from a component without adding an extra DOM node. This is useful in several scenarios:
+ 
+ React components typically return a single top-level element. However, sometimes you might need to return more than one element. Fragments allow you to group these elements without introducing unnecessary DOM nodes.
+ 
+ function Greeting() {
+  return (
+    <>  {/* Fragment (shorthand) */}
+      <h1>Hello, World!</h1>
+      <p>This is a React component.</p>
+    </>
+  );
+}
+
+
+Although you can also do something like.
+
+ Keyed Fragments:
+
+While fragments themselves don't have a DOM representation, you can add keys to fragments created with the explicit <React.Fragment> syntax. This is useful when iterating over collections and mapping them to JSX elements:
+
+
+function Glossary(props) {
+  return (
+    <dl>
+      {props.items.map((item) => (
+        <React.Fragment key={item.id}> {/* Fragment with key */}
+          <dt>{item.term}</dt>
+          <dd>{item.description}</dd>
+        </React.Fragment>
+      ))}
+    </dl>
+  );
+}
+
+general idea is, it groups multiple JSX together and send them as single JSX as, react component allows only 1 jsx to return. Hence this idea is applied.
+
+//HTML
+
+ <span role='button' style={starStyle}>
+ 
+ here by giving role tag you can specify the behaviour of that tag, here the span element will behave like button. This is pure HTML and not react.
+ 
+//Study the code
+
+function StarRating({ maxRating = 5 }) {
+    const [rating, setRating] = useState(0);
+    return (
+        <div style={containerStyle}>
+            <div style={starContainerStyle}>
+                {Array.from({ length: maxRating }, (_, i) => (
+                    <Star key={i} onRate={() => setRating(i+1)}/>
+                ))}
+            </div>
+            <p style={textStyle}>{rating || ""}</p>
+        </div>
+    );
+}
+
+//Component Life Cycle
+
+The first is a mounting phase or the inital render, when the npm starts, that states and props in the component are created and, the component strucure is visible in webPage.
+
+The Second Phase is re-render, the re-render can happen for a particular component when theirs a state chage, props change, parent component re-renders or the change in context.
+
+The Third Phase is unMount phase, this is where the component dies or taken off the webPage. Let's say, if a state value become falsy, the component will not render, this is when the component will not render.
+isOpen(false);
+like this (isOpen && <Form />)
+
+since the isOpen is a falsy value, the <Form /> component will not render and this componet will be destroyed along with its state and props.
+
+
+//Side Effects and useEffects.
+
+side Effect is, interatcion between react component and the world outside, the component. Like fetching the data from third party api, so you write the code to fetch third party api in react component. 
+
+The Side Effects, as actually necessary to build real worl react applications. But the react rule states that, side effect code should not be written in, render logic function.
+
+Hence to write the Side Effects code, we have two ways.
+
+Event handlers and useEffect();
+
+Eventhandlers are like onClick, onSubmit, onChange, where we can excute our API or other requests. But we can do these only when some events are occurred.
+
+Lets say, we want to fetch an api results as soon a webpage loads, thats when useEffect() hooks comes into play.
+
+This hooks does not runs immediately, in initial render, once the componet is painted on the canvas, this hook runs. Only during the initial pahse and not again.
+
+If you want to run this hook again some time, when changes occur in the UI, then you have to specify those dependecies in depncdy array.
+
+like 
+
+useEffect(fucntion(){
+
+return()=> cleanuP();
+},[]);
+
+
+useEffect always expects a function, which you want to perform, if you want the code written inside the useFeect function to, run again during the re-render process, you have to specify that in dependcy array. Means i certain statChnge happens then run te useEffect again. 
+
+Also during this re-render based upon a dependncy array, a useEffect returns a cleanup function as well.
+
+//Omdbapi key
+
+fac32ac5
+
+https://www.omdbapi.com/?apikey=fac32ac5&s=%22interstellar%22
+
+//how fetch works
+
+when fetch, brigns the data from third party api, or any api. usually it is in the form of meta data like this.
+
+Response
+body
+: 
+(...)
+bodyUsed
+: 
+false
+headers
+: 
+Headers {}
+ok
+: 
+true
+redirected
+: 
+false
+status
+: 
+200
+statusText
+: 
+""
+type
+: 
+"cors"
+url
+: 
+"https://www.omdbapi.com/?apikey=fac32ac5&s=interstellar"
+[[Prototype]]
+: 
+Response
+
+
+Hence inorder to parse this info, and convert it to, json format we do.
+
+.then(res=>res.json()).then(res=> colnsole.log(res));
+
+finally the console.log(res) gives the response, res.json() parses entire metadata sentby fetch and then forward send this parsed data to log function.
+
+Always rememeber the, Asynchronus functions in javascript, actually return a promise, which must be resolved in any case and should not be haulted. fetch() is an asynchronous function and returns a promise.
+
+const dataa = await fetch(`https://www.omdbapi.com/?apikey=${apikey}&s=${movieName}`)
+
+.await then(res => res.json) X
+you can not write like this, becuase .then() is usually waiting for its previous, asynchronous operation, while await fetch() actually only takes, the promise being resolved immediately hence the above sytax dose not work.
+
+The .then() method returns a new promise, but await expects a promise to be resolved immediately. It can't handle the pending state of a promise returned by .then().
+You can't use await outside an async function.
+
+
+
+The approach using async/await within useEffect (the first one) is generally considered better than using .then() chaining for several reasons:
+
+async/await provides a more synchronous-looking style, making the code easier to read and understand. It feels closer to how you'd write synchronous code, with lines executing sequentially (although they're still asynchronous under the hood).
+
+async/await allows for cleaner error handling using try...catch blocks. With .then(), you need to manually attach error handling functions using .catch().
+
+async/await offers a more readable, maintainable, and debuggable approach for handling asynchronous operations like fetching data in React components using useEffect.
+
+//to note.
+If You're attempting to call await on the result of fetch, which is a promise, not a response object. You should use await on the result of the promise's json() method.
+
+
+//IMP
+
+      try {
+        setLoading(true);
+        const response = await fetch(`https://www.omdbapi.com/?apikey=${apikey}&s=${movieName}`);
+        if(!response.ok) throw new Error('Unable to fetch movie');
+        const data = await response.json();
+        setMovies(data.Search || []);
+        
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+
+    }
+    
+    if a try block throws an error, the bleow lines code will not run any further and the control will go to catch block immediately. Hence, when we want to, setLoading(false) state false, we wrote it in a finally block, irrespective of error or not, these fixed lines of code will excuted, everytime. As we need it. 
+    
+ //IMP
+ 
+         <Box>
+          {isLoading ? <Loading /> : <MovieList movie={movies} />}
+          {!isLoading && !error && <MovieList movie={movies} />}
+          {error && <ErrorMessage message={error}/>}
+        </Box>
+        
+        
+        1st isLoading is true, so show <Loading /> component.
+        2nd !isLoading is not true anymore and also !error their is not error, means show movieList
+        3rd error is true means their is error, hence show <ErrorMessage />
+        
+        Try to understand, different prespectives, while developing they are simple, but gets confusing due to their simplicity.
+        
+  //IMP
+  
+  useEffect({},[]) with empty dependency array involved, will only run on inital render/Mount
+  
+  Any state used in the useEffect({
+  	${query}
+  
+  },[query])
+
+has to be mentioned in the dependency array. means whenever the state changes the useEffect will run.
+
+if useEffect({}) has no dpenedcy array, that, means it is vulenrable to all state changes in a component. Means any state is changed in component, the useEffect() will always run.
+
+
+Also, the useEffect() always runs after the browser painting, means when UI has been rendered. since it involves heavy operations like, fetch(), running it right after the render phase would mean, that UI would get stuck, and you might see nothing on UI or a lagged version of it.
+
+
+//IMP
+
+const isWatched = watched.map(movie => movie.imdbID === movieId) 
+i wanted to get a single boolean value, but
+this here actually returns an entire array of boolean values where as we want only one true or false hence ;
+
+hence we do something like
+const isWatched = watched.map(movie => movie.imdbID).includes(movieId);
+
+first map function, returns all the imdbID after than includes matches the imdbID array with movieId, if matched in return gives a boolean value.
+
+const watchedUserRating = watched.find(movie => movie.imdbID === movieId)?.userRating
+
+the find() first here returns a movie object,if the movie.imdbID matchrs the movieId,then it checks, safley acess the userRating property of that returned object. Since we use optional Chaining operator ? becuase if the first conditon in the find() does nt satisfy, it returns undefined. so not to throw error causing the application to brake, hence we use optional chaining.
+
+//Now a Pro tips.
+
+regarding events and calling functions on that event.
+
+case 1:
+<button className="btn-delete" onClick={()=> watchedMovie(movie.imdbID)}>❌</button>
+
+if their needs to be passed a value, onEvent to a function the useCallback () => andTehenCallFunction()
+
+Why it's necessary: If you passed watchedMovie(movie.imdbID) directly, it would execute immediately when the component renders, not when the button is clicked.
+
+
+
+case 2:
+
+<button className="btn-delete" onClick={watchedMovie}>❌</button>
+
+if their is no need to pass any values and you just need to call the function then pass the function name only.
+
+
+
+//How to manipulate index.html, elemtns from react component.
+
+  useEffect(() => {
+    if(!title) return;
+    document.title = `Movie | ${title}`;
+  },[title]);
+  
+  document.title edits the, title element in index.html, in public folder.
+  
+  
+  now since, title is a varibale inside a object, and this useEffect mounts at the intial render,in render stage no useEffect is usually ran, once the browser paint happens, all asynchronus, useEffect starts. 
+  
+  since title depends upon another, useEffect to finish, so that it can have a data, but since all useEfffect are asynchornous, the controller reaches the above useEffect title gets undefined. hence in the first line we wrote the 
+  
+  if(!title) return condditon if no title or undefined.
+  
+   Also, the useEffect will run when the, title value changes.
+   
+ //Clean up function
+  /here title is a sperate varibale and have nothing to do wiht document.title, here it is refereing to DOM's title property.
+
+   useEffect(() => {
+    if(!title) return;
+    document.title = `Movie | ${title}`;
+    return function () {
+      document.title=`usePopcorn`;
+      console.log(`Movie name is ${title}`);
+    }
+  },[title]);
+
+  
+  in the above code we have written the cleanup function this
+  
+   return function () {
+      document.title=`usePopcorn`;
+      console.log(`Movie name is ${title}`);
+    }
+    
+    sometime it is necessary to write this, this useEffect still goes on running, even if <MovieDetails /> component was unmounted. 
+    
+    in this case as the useEffect({},[]) is the important, part of functional component life cycle.
+    
+    where it runs, when component mounts and re-renders. Also   useEffect({},[]) must run when component unmounts.
+
+    Unmounting Behavior:
+
+    useEffect can include a cleanup function that runs when the component unmounts.
+    This cleanup function is important for cleaning up side effects, such as canceling HTTP requests or unsubscribing from subscriptions, to prevent memory leaks.
+
+
+    
+    that's when clean up functions are written. these useEffect() runs when component is unmounted as well as, component re-renders. 
+    
+    clenaup fucntions are used, when http resquest, goes on excuting even though component is unmounted.
+
+
+    
+
+    
+ now about this in the function 
+ 
+ console.log(`Movie name is ${title}`);
+ 
+ even though, useEffects cleanup function runs, when compoent is unmounted, when you log, you would still get the last Movie name like
+ 
+ Movie name is Interstellar.
+ 
+ now why is that, isn't all the objects and its states are destroyed when compoent unmounts. The concept is called as, closuers in JS. a very major concept.
+ 
+ In simple words, in javaScript the functions have the power to retain, all the last, state or values, of variables and their defination which were present at the time of its creation, function remebers evrything, from its outer scope. even though they are out of callstack memory or they are destroyed out of callstack memory.
+ 
+ hence it get's logged. 
+ 
+ 
+ //Understanding AbortController:
+
+The AbortController is a built-in JavaScript API that allows you to gracefully cancel ongoing asynchronous operations, such as fetch requests.
+It provides a signal property that can be passed to asynchronous operations as an option.
+When the abort() method is called on the AbortController instance, the signal is set to aborted, signaling the operation to stop.
+
+  useEffect(() => {
+
+    const controller = new AbortController();
+    const fetchData = async function () {
+      try {
+        setLoading(true);
+        setError('');
+        const response = await fetch(`https://www.omdbapi.com/?apikey=${apikey}&s=${query}`, {signal: controller.signal});
+        .
+        .
+        ..
+        .
+            fetchData();
+    return () => {
+  
+      controller.abort();
+    }
+  }, [query]);
+
+the Abort Controller is cotrollig the fetch, request as the query in the dependency array, which is connected to onCHange() of input field, the moment you type another key, the query variable state changes, making useEffect() re-render again, and their by making lots of network request. Hence, {controller: signal} is passed as an object to fetch() where whenever a querystate change, useEffect will run again, and the earlier exuted fetch() will be abroted and new will begin. This giving is a better netwrok rqequst and application optimmization.
+
+//Understanding React and Event Listencer behaviour.
+
+  useEffect(() => {
+    function callback(e){
+      if(e.code === "Escape"){
+        onClosedMovie();
+        console.log('Closing'); 
+      }
+    }
+    document.addEventListener("keydown", callback);
+    return () => {
+      document.removeEventListener("keydown", callback);
+    };
+  },[onClosedMovie])
+  
+  in this code, whenever the useEffect renders, the new addEventListner created gets bind over the olderOne, and we dont want so many of that, we just want one.
+  
+  hence we put, clean up function where we removeEventListener on escape keypress and calls a callback. Cleanup function runs on re-render and component unmount.
+  
+  
+ //some IMP Shit, must know.
+ 
+ <select> tags while you want to record the select element and its value, its necessary that you use onChange on these tags. and not onSelect() event handlers. also, whenever you are trying to record the targt value always give value prop a state variable to maintian the state.
+ 
+ like
+ 
+       <select
+        value={queryCurrency}
+        onChange={(e) => setQueryCurrency(e.target.value)}
+      >
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="CAD">CAD</option>
+        <option value="INR">INR</option>
+      </select>
+      
+  //How to acess values, if an api returns an object which further has and objectt inside it and you want to acess its supoose first value.
+  
+  then you should write something like.
+  
+  const response = data.json();
+  
+  const rates = response.rates;
+  
+
+  //rates: {INR: 8300, USD: 100} 
+ 
+  const KeyOfObject = Object.keys(rates)[0];
+    //this gives first key INR from rates object.
+    // keyOfObject = INR;
+   
+   const value = rates[keyofObject]
+   //8300
+  
+  
+  you  can also directly write like this, value = Object.values(rates)[0];
+  you would get 8300.
+
+
+//React hooks rules. 
+
+in react hooks cannot be writeen inside the conditional loop. Also they only must be written inside the functional components. notelsewhere.
+
+Also, they need to be declaredd ans used at the top level and not at, neseted level.
+
+In react, as the fiber tree is created after the render. so each fiber in fiber tree, has its props, and linked list of hooks. (on a sider not rember, the fiber represents each compoent, also, fiber are not created every time, compoent is re-rendered, but a fiber tree is created).
+
+So in reality, inside each fiber, all hooks are interconnect, useState 1 has the refrence of useState 2 and it state2 has refrence of state3.
+
+interconnected. so if you put one hook inside an if() condition and conditon becoemes false and useState hook does not run, hence useState 1 still have refrence to useState 2, which it cannot pass on te cntrol, also theirs no way acessing the useState 3.
+
+They are linked together, so that, we do not need to provide naming conventions every time we use useState or anyother hook. and that way its easier to maintian the hooks order number, thats why they are linked..
+
+//Storing inside, the localStorage of device.
+
+localStorage.setItem("watched", JSON.stringify(watched));
+
+this is browser built in functio, the name is specified, and the data that is, although it expects a stringify data, hence if its not string, then JSON.stringify it, in our case its watched is an array.
+
+although always remember due, the fear of stale state, try not to use localestorage inside eventhandling functions where
+ the state is being handeled for the same, will give you the result as undefined.
+ 
+ the correct way
+ 
+   useEffect(()=>{
+    localStorage.setItem("watched", JSON.stringify(watched));
+  },[watched]);
+  
+  since this useEffect only runs on inital mount and, when watched the state variable is updated by the handleWatchedMovie() function. Thus giving better control.
+ //how not to do
+ 
+   function handleWatchedMovie(movie) {
+    setWatched(prevMovie => [...prevMovie, movie])
+    localStorage.setItem("watched", JSON.stringify(watched));
+  }
+  
+  if you do like this, you will always miss on the current updated value. This happens as the state chaging variables are asynchronous, hence setWatched goes to execute and the control goes further to localstorage directly, so at first it will undefined as the watched the state variable still not have value assgiend to it.
+  
+  inside event handle functions, the values of state varibales still not updated untill, the entire eventhandler function is over.
+  
+  Although their is away to tackle this probelm, if you want to directly use current state, but it might be limited in usecase, is pass a call back function to setState varibales.
+  
+  setState(curr_sstate => curr_state + 1); you can do like this. callback alswsy bring the current value of state variable.
+  
+  
+//how to set and get data from your application to localeStorage and vice versa.
+
+
+  //Storing data in localStorage.
+  
+     useEffect(()=>{
+    localStorage.setItem("watched", JSON.stringify(watched));
+  },[watched]);
+  
+  //getting data from localStorage
+  
+    const [watched, setWatched] = useState(function(){
+    const storedValue = localStorage.getItem('watched');
+    return JSON.parse(storedValue);
+  });
+  
+  this useState get's initalised only once with this default value, on inital mount, after that on state change, this default function will be ignored. and whatever value we set to setWatched will be the new value of watched state vraible.
+  
+  now since watched state varibale demands an array value, as we defined in other fucntion while workign with it. localStorage always returns, the stringify value, hence inorder to return  an array value we JSON.parse(storedValue).
+  
+  //what now is allowed
+  
+  useState(localStorage.getItem('watched'))
+  this is not allwoed because, here the function is not being passed it is being called. 
+  
+  useState(()=> {}) this is called function passing. useState does not allow direct function calling like above. You should pass the localstroage line inside like this
+  
+  useState(() => {
+  	localStorage.getItem('watched')
+  })
+  
+  this the correct way. and the function should be a pure function with no arugments being passed to it. this is mot important.
+  
+//useref
+
+is aother hook, which is just like useState but a bit different, it manages to keep record of state of variable, even in re-renders. just like useState
+
+the only difference is, useState() re-renders the component, while useRef does not re-renders the component.
+
+So, the use-case is pretty simple, if you only want state to change, means value of the variable changs over time, but does not want entie component to reload, or re-rendered (where, entire state and props are destroyed and built again). use useRef()
+
+usRef() returns an mutating object which has this .current porperty which you can change anytime. useRef are not asychronous in nature. 
+  
+  const inputEL = useRef(null);
+  
+  inputEL.current.focus()
+  this will work
+  
+  inputEL.current="123"
+  this will not work.
+  
+  The reason is, inputEL.current value can be mutates, but it cannot, be updated on a webPage as it is not a state, that would cause an immediate re-render.
+  
+  But the first one will work because, .focus() is actually browser special function, where it directly manipulates the DOM, it does not seprately interacts with virtual DOM.
+  
+ 
+ //custom hook.
+ 
+ lets first understand reusability in react,
+ In react we can only reuse two things, components or logic.
+ 
+ If you want to reuse Components, then create a seprate file for component, and then use it <ComponentName /> where ever you want to place.
+ 
+ Now if you want to re-use logic, then first check will this logic have any states or effect, if yes then use Custom hook or use normal function.
+ 
+ so how to build a custom hook, its a normal js function only, only the difference is, it returns an object or arr and also it expects an agument (ans) not a prop like this ({ans}).
+ 
+ here's the code you can understand
+ 
+ import { useState ,useEffect } from "react";
+
+const apikey = 'fac32ac5';
+
+export function useMovie(query){
+    const [movies, setMovies] = useState([]);
+    const [isLoading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+
+        const controller = new AbortController();
+        const fetchData = async function () {
+          try {
+            setLoading(true);
+            setError('');
+            const response = await fetch(`https://www.omdbapi.com/?apikey=${apikey}&s=${query}`, {signal: controller.signal});
+            if (!response.ok) throw new Error('Unable to fetch movie');
+            const data = await response.json();
+            if (data.Response === 'False') {
+              if (!movies) {
+                throw new Error(data.Error);
+              }
+            };
+            console.log(data);
+            setMovies(data.Search || []);
+            setError("");
+          } catch (error) {
+            if (query.length < 3) {
+              setError('Please Enter the movie name');
+            } else if(error.name !== "AbortError") {
+              setError(error.message);
+            }
+          } finally {
+            setLoading(false);
+          }
+    
+        }
+        // handleClosedMovie();
+        fetchData();
+        return () => {
+      
+          controller.abort();
+        }
+      }, [query]);
+
+      return {movies, isLoading, error, apikey};
+}
+
+//Inside App component
+
+const {movies, isLoading, error, apikey} = useMovie(query);
+
+whatever object was returned, were destructred and used further in app component.
+
+
+//Study
+import { useState, useEffect } from "react";
+export function useLocalStorage(initalState, key){
+    const [watched, setWatched] = useState(function(){
+        const storedValue = localStorage.getItem(key);
+        return storedValue ?  JSON.parse(storedValue) : initalState;
+      });
+
+      useEffect(()=>{
+        localStorage.setItem("watched", JSON.stringify(watched));
+      },[watched, key]);
+    
+    return [watched, setWatched];
+}
+
+here intialState is passed as an arguement to this hook and its value is []
+
+
+//React Router -DOM
+
+The react-router-dom is the third party library used to, navigate to different pages, without letting the browser reload. Hence giving us the Single Page Application. Usually it does not navigate to different, the web canvas stays the same, only the component on the webpage changes.
+
+their are also old ways of doing this like,
+
+<BrowserRouter>
+ 	<Routes>
+ 		<Route path = "/" element = <Home /> >
+ 	</Routes
+</BrowserRouter>
+  
+
+this is how it used to be written and they remotely like this
+
+<Link to="/">Homepage</Link>
+
+this is how it is done, without using hered and anchor tag.
+
+//But this was the old way of doing as per the new advancement. The new place was taken by, version 6.4
+
+which introduced, multiple data apis, with various features, also it reudced the huge boilerplate code. with
+
+createBrowser() for web
+
+	const router = createBrowserRouter([
+		{
+			path: '/',
+			element: <Home />,
+		},
+		{
+			path: '/menu',
+			element: <Menu />,
+		},
+		{ path: '/cart', element: <Cart /> },
+		{ path: '/createorder/new', element: <CreateOrder /> },
+		{ path: '/order/:orderId', element: <Order /> },
+	]);
+	
+	
+	to acess them remotely, you can use <Link> tag as it was used before only.
+	
+	
+ 
+ Now, what if i want to as the orderId from the url /order/:orderId, anyting after url is conisdered a param.
+ 
+ hence we use, useParams from react-router-dom
+ 
+ const params = useParams();
+ 
+ //it returns an object.
+ 
+ so we dstructre it,
+ 
+ <h1>{params.orderId}</h1>
+ 
+ the objectProperty name will be the same as mentioned in the path.
+ 
+ 
+ //dataloader api in react-router.
+ 
+ It is used to fetch the api, simultaneously while rendering the page. earlier, when we navigated to the page
+ 
+ we use to use useEffect(() => {
+ 	fethc()
+ });
+ 
+ where, the page ui used to get rendred first and then, data fetching used to occur. it was called as data loading waterfall.
+ 
+ to solve this issue react-router dom introduced the dataloader.
+ //Inside Menu Component;
+ 
+ export async function loader() {
+	const data = await getMenu();
+	return data;
+}
+
+ 
+
+ 				// passed as property inside createBrowserRouter
+ 				{
+					path: '/menu',
+					element: <Menu />,
+					loader: menuLoader,
+				},
+				
+				
+// Inside Menu component
+
+ const menu = useLoaderData();
+ 
+ 
+ frist we decared, the loader fucntion, and called the api function getMenu(); which is imported from the file that handles the api's.
+ 
+ we export this loader function.
+ 
+ then we import that function, where the createbrowserRouter is defined, to pass it as a loader prop. mentioned in the second step.
+ 
+ 
+ //and finally we again, come Menu component,
+ 
+ to use that fetched, data, while simultaneously rendering. mentioned in the 3rd step.
+ 
+ useLoaderData(); gives you the data, sent by the loader function. It is generally their, as soon as component renders, simulatneously the this fetching also starts and give you the data. 
+ 
+ making you more optimised.
+ 
+ then you can just do, menu.map(menu => <menuItem pizza={pizza} key={pizza.id});
+ 
+ //But theirs a Catch now, 
+ 
+ //what if theirs a, a delay while fetching.it makes the wepage in halted appearnce.  Thier should be a loading state, sowing that, webpage is loading. thus giving us a chance to load the fetch data.
+ 
+ //this is when useNavigation() comes in to picture.
+ 
+ useNavigation() generally deterimes and calculates wether the application is i loading or idle. yes the entire application and not just a certain page.
+ 
+ //so sometimes it is advisied to use it in an < Applayout /> as it stays constant thorugh out the webApp.
+ 
+ so we just do 
+ 
+ const navigation = useNavigation();
+ 
+ which returns an object
+ 
+ 	so we do
+ 	
+ 	const isLoading = navigation.state === "loading"
+ 	
+ 	and then in jsx we render
+ 	
+ 	{isLoading && <Loader />}
+ 
+ 
+ //handling errors in, React Router.
+ 
+ suppose, no such route exsist in that case, we need to show user the error component. this is where the
+ 
+ errorElement property comes, which we write in createBrowserRouter() function, usually you should write that, in parent object, so it will have gloabl acess through out the pages. But that's optioinal that also had certian cons, you can also specify it in child element, where it is more relevant. The error occured inside child element, will be checked at child level first, wether errorElement is present or not, if not then it will bubble up to the parent element.
+ 
+ const router = createBrowserRouter([
+		{
+			element: <AppLayout />,
+			errorElement: <Error />,
+			children: [
+				{
+					path: '/',
+					element: <Home />,
+				},
+				{
+					path: '/menu',
+					element: <Menu />,
+					loader: menuLoader,
+					errorElement: <Error />,
+				},
+thats how you write it.
+
+//But what if you want to acess the error that came while acesssing the url. not just that, if certain page failed to meet the criteria, or failed to fetch something that's when we acess that error.message
+
+//remeber all these evetns are monitored on the entire web application and not just the page. suppose, i went to the path 
+
+//loaclhost:8000/menu  and inside the menu, suppose the data that was supposed to be fetched did not got response prperly and got error, so this error will be caught by,
+
+//IMP whatever the error occur in side the child paths, will eventually bubble up to the parent element and then errorElement: <Erro > component will get rendered automatically. This is the concept of event bubbling. an IMP JS topic.
+
+react-router, hence the errorElement will be <Error /> component will be rendered.
+
+inside <Error /> we 
+ use 
+ 
+ useRouterError(); hook, which gives you object, which has all the information regarding, exactly what error occured and what loacation it occued.
+ 
+ {error.data || error.message} to get error name.
+ 
+ //Another hook, useNavigat(); mostly used when event handling fuctions are used
+ 
+ const navigate = useNavigate();
+ <button onClick={() => navigate(-1)}>&larr; Go back</button>
+ 
+navigate(-1) the -1 takes you to previous page. 
+
+&larr; previous arrow and &rarr; next arrow.
+
+
+// while acessing params in the url /order/:orderId.
+
+we use useParams() hook to get the orderId. But their but arise a conditon, where we wanna acess the, orderId outside functional component. like in loader functions which are pure functions. In this case, we cannot use useParams() hook.
+
+// to solve this problem react-router provides params as an argument to loader fucntions.
+
+// we just need to accept them as an argument and destrucure.
+
+export async function loader({ params }) {
+	const data = await getOrder(params.orderId);
+}
+
+
+
+ 
+ 
+ 
+ 

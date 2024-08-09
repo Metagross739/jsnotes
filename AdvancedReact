@@ -1,0 +1,152 @@
+useReducer
+
+useReducer is an advanced, hook to manage state. It is used, when the app size and state managent is large. like if you use two state for doing the work, in your app. 
+
+  const [count, setCount] = useState(0);
+  const [step, setStep] = useState(1);
+  
+  these two states, can be set and mainted its state, with a single useReducer function.
+  
+  Lets take a look at the syntax, of useReucer.
+  
+  const [stateVaribale, dispatch] = useReducer(reducer, initialstate);
+  
+  so just like useState(), useReducer() takes the initial state, that will be set as default state varibale value. We also have a stateVaribale who maitains the updated and default state value. and we also have a dispatch() which responsible to, set the new state of the stateVariable.
+  
+  But then wahts new? its just like, useState() varibale?.  Well no, look closley, useReucer also accepts a reducer fucntion. You can say, it is solely resposible for, managing the state, more effectively better than useState.
+  
+  in useState(), we passed updated state value to, setState(cs => cs + 1); and the new state was updated behind the scenes. No code was visible, how the state is updating, nor we could change, how it should be updated. 
+  
+  Thus useReucer give us this felxibilty, with reducer function() how ? well dispatch() and function reducer() works together for it!
+  
+  
+  function reducer(state, action){}
+  
+  here the reducer accepts two parameters, state, which is previous state and action as a data, sent by a user. so that state and data, will be computed together and new output will be returned and will be stored in the statevariable provided.
+  
+  
+  //let's get a better look with code.
+  
+  const {count : 0, step: 1} = initialState;\
+  
+  function reducer(state, action){
+   switch(action.type)
+   case: "inc"
+   	return {...state, state.count: state.count+1};
+   case: "setValue"
+   	return {...state, state.step: action.payload}
+   default:
+   	return initialState;
+  }
+  
+  const [count, dispatch] = useReucer(reducer, initialState);
+  
+  //the default, value would be an object now.
+  
+  
+  function handleClickEvent(e){
+  	dispatch({type: "inc"});
+  }
+  
+  function setInitialValue(e){
+  	dispatch({type: "setValue", payload: (e.target.value)})
+  }
+//lets breakdown the code. 
+
+like written at the very begining, two seprate useState written for step and count, gets minimised and are maintained by single useReducer() with intial value as an object {} which has both the value {count:0, step: 1};
+
+//function reducer
+
+this function accepts two parameter, current state and the action. here action expects an object to be passed. which will have type of data, and payload means the autal data. type in the sense can also or does mean, the name of the data. which is further used while indentifying where the state needs to be updated or not.
+
+it expects the action data in this way {type: "name", payload: "Pushkar"}, and as i said dispatch and reducer function works together. this action oject is passed through, dispatch({type: "name", payload: "Pushkar"}); function.
+
+so when
+ handleClickEvent(e) event happens, dispatch({type: "inc"}) is passed to reducere function, passing type or payload, any on among the two or both is a felxible option developer had.
+ 
+  switch(action.type)
+   case: "inc"
+   	return {...state, state.count: state.count+1};
+   	
+   	this swtich case checks, if action.type is "inc". then {...spread the current state, update state.count value with state.count+1};
+   	
+   	so if state was {count: 0} now it would be returned as {count : 1} and this value would be stored in 
+   	
+   	const [count, dispatch] = useReucer(reducer, initialState);
+   	
+   	this count variable which now holds an object, so we have to destructure it in the app like this,
+   	
+   	const {count, step} = count;
+   	
+   	then go on to use thse values in app like
+   	
+   	<>
+   	<p>{count}</p>
+   	<p>{step}</p>
+   	</>
+   	
+  So that's how useReucer operates, it has more major useCases, but this basic if perfect to understand why useReucer.
+  
+  While using useReducer
+  
+        case "onNextQue":
+        return {
+          ...state,
+          index: (state.index || 0) + 1,
+        
+        }
+        
+        if in dispatch you did not mention payload, reducer may not no wether the index for defined initally and when if it had been, its prevous state might be unknown. hence instead of writing
+        
+        index: index + 1. this would give us, index not defined error.
+        instead do this
+        index: (state.index) + 1
+       
+       
+      //we cannot set state on a progress bar.
+      <progress max={} value={} />
+      its an html element
+ 
+ 
+ //setInterval
+ 
+ as you should know, that, inside useEffect() if you have used, setInterval, belive me, it would keep on addinng on the previous one, on every re-render, and it would misbhevae, like, you have setInterval of 1 second for 10 secons, it would keep on adding setInterval one upon each other, since all running at the same, time at each-rernedr, the 10 seconds will be completed in 2 secods only. hence you need to clear setInterval on each re-render, so that, everytime interval can run for 10 seconds, here study the code.
+ 
+ setInterval(function(),1000) keeps on running every millisecond, untill you have to clearInterval()
+ 
+ function Timmer({dispatch, secondsRemaning}) {
+
+    useEffect(() => {
+       const id = setInterval(function(){
+            dispatch({type: "onTick"})
+        }, 1000);
+        return () => clearInterval(id);
+    },[dispatch])
+
+    return (
+        <div className='timer'>
+            {secondsRemaning}
+        </div>
+    );
+}
+
+ <Routes>
+      <Route path="/" element={<App />}>
+      <Route element={<PageLayout />}>
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/tos" element={<Tos />} />
+      </Route>
+ <Routes/>
+
+
+// Redux
+
+
+Redux is similar to useReducer, just with normal differences, although Redux in itself is a third party library and and has multiple features and not just state management. 
+
+Just like useReducer, we use dispatch function to provide {type, payload} to reducer function. In redux we provide it to, store. Store has multiple reducer function. The genereal idea is that, each reducer will handle one service like shopping cart in ecommerce projec will have 1 reducer function and userProfile will have another reducer function.
+
+
+//reduxjs/toolkit
+
+action creators in reducers uing reduxtoolkit accepts only one argument, that's a drawback. Be it is handled using the, 

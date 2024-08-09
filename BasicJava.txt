@@ -1,0 +1,46 @@
+Java development toolkit.
+
+it generally contians, tools and fucntions and predfeined classes. you need in you programs.
+
+Also it has JRE, Java runtime environment. It has all the lbraries, that are responsible to compile and interpreate your code. 
+
+Java compile converts the code into byte code. 
+
+JVM actually excutes this byte code in its virtual environment.
+
+JVM is java virtual Machine, solely responsible for, to run your class file. making it plafrom independt. it runs insided virtal machie.
+
+
+JVM has certain functions
+
+//class loader
+
+it ususally loads the program in memory.
+
+//class area:
+
+It is also called as method area. Where it stores all the method names and its return types.
+
+//Heap and stack memeory
+
+usually, newly created objects are stored in a heap, where as temp values are stored in stack memory. where as refrence to object or, string are stored in stack.
+
+// PC Register
+
+It storees the information about current exceution instrucntions/context.
+
+
+// Native method
+
+It stores native method. native methods are, generally third party apis, written in different languages which we require in our java program.
+
+In Java, the native stack (also known as the native method stack) stores information related to native methods. Native methods are methods written in other programming languages, such as C or C++, which are invoked from Java code using the Java Native Interface (JNI). These methods are often used to interact with system-level resources or third-party APIs that are not directly accessible from Java.
+
+//native stack
+
+load these native methods.
+
+//Native method interface
+
+It is resposible for, communicating with native method libray.
+
