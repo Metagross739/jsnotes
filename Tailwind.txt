@@ -1,0 +1,343 @@
+//TailwindCSS
+
+it's a utility first CSS framework, it provided you, with already written classes. you can directly specify these css in side your styled coponent.
+
+// inroder to get tailwindCSS prettier pulgin, make .prettierrc.json file inisde root directory then paste this following line.
+
+{
+  "plugins": ["prettier-plugin-tailwindcss"]
+}
+
+
+then, it would not work directly, startwriting the tailwind classes and then save, it will re format the, lines, lik calss will come first followed by utilities and then component something like that not sure about the last one.
+
+//Working with CSS colors.
+
+in order to give your component, colors we need to specify. 
+
+if you want to color, the text we do text-{colorname}-{colorWeight}.
+
+like text-yellow-500.
+
+
+if you want to color, the backgroud, then we do bg-pink-500.
+
+that's in generall how the, color works.
+
+//But you can also specify your custom pallet. Chck the doc for it, also their are quite, different props regarding colro like colors: inherit etc. check, but get the above basic idea.
+
+
+//to make the, text uppercase, use className="uppercase" and the elemnt text will be uppercase.
+
+//letter-sapcing
+
+it sepcifies the, spaces among the letters. You can specify that using, this.
+ 
+ tracking-widest, it will genrate spaces among the leteers. now this spacing is 1rem. you can also cusotmise it
+ 
+ like this tracking-[5px] their will be 5px gap between each letter.
+ 
+ //you can also do same for, text-[150px] the text size will be 150px, , but you should stick as much as to basic with text-xl.
+ 
+ //margin
+ 
+ to provide margin to compoent we use m tag only.
+ 
+ heres how it is used,
+
+mx-10 means put margin on x axsis which is left and right of the compoenent. 10 genreally specifies the 1.5rem which is generally 40px. you dont need to remember these values, tailwindi intellisense just you, the values, you jus try and see what makes the most sense to your UI.
+
+similary my-10 puts marign on y axsis which is top and bottom of the copoenent, with 40px.
+
+you cann seem the offical doc for more margin proetries liek mt-10 marign top, ml-10 margin left. You get the basic idea.
+
+//IMP diffrence between margin and paddign is, margin is allplies outside the border of compoent. for better understaading, but padding actually bubbles up your component.
+
+
+//padding
+
+for padding we do px-4 padding to left and right
+
+for padding to top and bottom we do py-4
+
+
+//border
+
+to border you can do border-b means adding border to bottom, default ti is 1rem, you can specify 
+
+border-b-4
+
+to put color to border you should do,  border-b border-{colorname}-{colorweight}.
+
+border-b border-stone-500
+
+
+//space-x-4
+hre the span elements will have space of 4 between them here it genreally puts space between the, child elements of parent component, try using it on span elements. will work good one.
+
+      <p className="space-x-4 font-semibold text-stone-300">
+        <span>23 pizzas</span>
+        <span>$23.45</span>
+      </p>
+      
+//responsive web desgin, which works on mobile as well.
+
+//IMP ALWAYS REMEBER WHEN YOU WRITTE THE CSS FOR WEB APPLICTION ALWAYS WRITE THE CSS FOR MOBILE DEVICES AS FIRST THEN AS THE RESOLUTION HIT'S CHANGE THE DEFAULT CSS. THE DEFAULT CSS SHOULD ALWAYS BE MOBILE CSS.
+
+while desiging the layout, you must think of mobile first desgin. Since tailwind is a mobile first design, defualt, it provides a little bit of mobile friendly design. But, you also must specify the prefix properties.
+
+You can check the official doc, for it, type responsive design.
+
+their are sm, lg, xl properties. ill explain the sm property here.
+
+sm properyt resonate the @media query of, 640px means, once the 640px resolution of window is hit certian CSS property will be, take palce, than the defualt. like here.
+
+<h1 className="my-10 sm:my-16">Hello world</h1>
+
+so in the above, h1 tag, the default marign for h1 elelment will be 10 value , but as soon as if the window hits, 640px resolution or more the default css for h1 element, will become 16 value thus giving a responsive design. 
+
+
+you can acutally specify, the responsive desgin as per the devie inside tailwind.config.css
+
+we specify like, tablet: 640px, laptop: 1200px, tv: 300px     
+
+
+//Building layouts
+
+
+//Flexbox
+
+to use flexbox porperites in tailwind, their are couple of changes.
+
+in normla css to use disply: flex,  but we just mention "felx" to use felxbox properties.
+
+in noral css align-items: center, then we do in tialwind just items-center, it makes the items vertical, if the flex-direction is row which by default is, in normal css. But in tailwind by defualt the felx-direction is maybe vertical. hence 'items-center' makes the, items horizontal
+
+in normal css weuse justify-content, may be in tailwind we can also use this property. check the doc for that, but, more importantly i can tell is, justify-between: it pushes the context to right side and make space between.
+
+// i know it's getting confused. But to understand flexbox in good way frist read the below, vanilla CSS flexbox. and the, you can read the tailwind version.
+
+//just to speed you up and not to let you caught in reading hell, items (align-items) and justify (justify) these items and justify are the keywords substituted in tailwind, using them with itellisense automatically will provide you with necessary suggestions.
+
+//Basic of Flexbox vanilla CSS
+
+```The `align-items: center` and `justify-content: center` properties are part of the Flexbox layout model in CSS. They are used to control the alignment and positioning of items within a flex container. Here's what they do:
+
+### `align-items: center`
+- **Purpose:** Vertically centers the flex items within the flex container.
+- **How it works:** 
+  - When applied to a flex container, it aligns the flex items along the cross axis (which is vertical in a row-oriented flexbox and horizontal in a column-oriented flexbox).
+  - If your flex direction is `row` (the default), `align-items: center` will vertically center the items within the height of the flex container.
+  - If your flex direction is `column`, it will horizontally center the items within the width of the flex container.
+
+**Example:**
+```css
+.container {
+    display: flex;
+    align-items: center; /* Vertically centers items */
+    height: 200px; /* Assuming a specific height for demonstration */
+}
+```
+
+### `justify-content: center`
+- **Purpose:** Horizontally centers the flex items within the flex container.
+- **How it works:**
+  - When applied to a flex container, it aligns the flex items along the main axis (which is horizontal in a row-oriented flexbox and vertical in a column-oriented flexbox).
+  - If your flex direction is `row` (the default), `justify-content: center` will horizontally center the items within the width of the flex container.
+  - If your flex direction is `column`, it will vertically center the items within the height of the flex container.
+
+**Example:**
+```css
+.container {
+    display: flex;
+    justify-content: center; /* Horizontally centers items */
+    width: 100%; /* Assuming full width for demonstration */
+}
+```
+
+### Combining `align-items: center` and `justify-content: center`
+- **Result:** When both properties are used together in a flex container with `display: flex`, the flex items are centered both horizontally and vertically within the container.
+
+**Example:**
+```css
+.container {
+    display: flex;
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+    height: 200px; /* Specific height */
+    width: 200px; /* Specific width */
+}
+```
+In this example, the items inside `.container` will be perfectly centered both horizontally and vertically within the 200px by 200px box.
+
+This combination is particularly useful for creating layouts where content needs to be centered both ways, such as a loading spinner in the middle of the screen.
+
+In the context of Flexbox, the terms **main axis** and **cross axis** are used to describe the directions in which flex items are laid out within a flex container. The orientation of these axes depends on the `flex-direction` property.
+
+### Main Axis
+- **Definition:** The main axis is the primary axis along which the flex items are placed within the flex container. 
+- **Determined by:** The `flex-direction` property.
+  - If `flex-direction: row` (default), the main axis runs **horizontally** from left to right.
+  - If `flex-direction: column`, the main axis runs **vertically** from top to bottom.
+  - If `flex-direction: row-reverse`, the main axis runs **horizontally** from right to left.
+  - If `flex-direction: column-reverse`, the main axis runs **vertically** from bottom to top.
+
+**Example:**
+```css
+.container {
+    display: flex;
+    flex-direction: row; /* Main axis is horizontal */
+}
+```
+
+### Cross Axis
+- **Definition:** The cross axis is perpendicular to the main axis, meaning it runs in the opposite direction of the main axis. The flex items are aligned along the cross axis using properties like `align-items`.
+- **Determined by:** The main axis direction, which is set by the `flex-direction` property.
+  - If the main axis is horizontal (`row`), the cross axis is **vertical**.
+  - If the main axis is vertical (`column`), the cross axis is **horizontal**.
+
+**Example:**
+```css
+.container {
+    display: flex;
+    flex-direction: column; /* Main axis is vertical */
+    align-items: center; /* Items aligned horizontally (cross axis) */
+}
+```
+
+### Summary of Differences:
+- **Main Axis:** The direction in which flex items are laid out, determined by `flex-direction`.
+- **Cross Axis:** The direction perpendicular to the main axis, used for aligning items within the flex container.
+
+### Visual Representation:
+
+- **`flex-direction: row`** (Main axis: horizontal)
+  - Main axis: → 
+  - Cross axis: ↓ 
+
+- **`flex-direction: column`** (Main axis: vertical)
+  - Main axis: ↓ 
+  - Cross axis: → 
+
+By understanding the main and cross axes, you can control the layout and alignment of flex items in a more intuitive way when using Flexbox.```
+
+
+//Study
+
+<div className="hidden text-sm font-semibold md:block">Jonny Oll'a</div>
+
+the above line will be hidden by default, bu as soon as we hit the middle reslution of the webpage, we see this line.
+
+
+//grid
+
+grid is a tough one to write, but let's put out like, with grid you can, structure the components, in rows and columns.
+
+so in fast-react-pizza-co. we have 3 rows on the home page, header, middle One and footer. these three rows will have certain properties like
+
+    <div className="grid h-screen grid-rows-[auto_1fr_auto]">
+      {isLoading && <Loader />}
+      <Header />
+      <main>
+        <Outlet />
+      </main>
+      <CartOverview />
+    </div>
+    
+ // so the above jsx is the layout jsx, where we have to write this applyout jsx serpately that's a good practicse at least in small scale applications.
+ 
+ so, the first thing in className is that we specify that, we are using grid display, aftre that tha we speciy with grid-rows that we wan all the child ements to be treated as rows, and then we put cusotm code with -[auto_1fr_auto] what's happening here is we sepecifcally specify that, 1st row will be auto, means it hargin and padding will be wrapped arround the content it has. 2nd row has 1fr means capture the entire screen between these rows. and 3rd row also specfies that, paddign and margin will be wrapped arround the content.
+ 
+ // IMP h-screen is actually responsible to stretch and fit your components to entire web-page
+ 
+ 
+ //Study
+ 
+       <main className="overflow-scroll">
+        <Outlet />
+      </main>
+      
+      the above css becomes necessary when the screen size is extremely small, so the header does not show's up. we have to keep scrolling untill it appears.
+      
+      hence with the overflow-scroll what happens is, the footer gets stuck to the page and only the middle page contenet get's scrolled.
+      
+ 
+       <main className="mx-auto max-w-3xl overflow-scroll bg-red-500">
+        <Outlet />
+      </main>
+      
+      max-w-3xl is given istead of w-70 is because width sometimes, does not cover the webpage as expexcted. Hence you should use the max-w property. as per your cause, always try and check.
+      
+      since, max-w-3xl covers only half page and then, leaves white space on the right side. hence we do mx-auto. Where margin exqually wrapped arround left and right side of the component making it intothe center 
+      
+ //study button
+          <button
+            className="inline-block rounded-full bg-yellow-400 px-4 py-3 font-semibold uppercase tracking-wide text-stone-900 focus: outline-none focus:ring-offset-2 transition-colors duration-300 hover:bg-yellow-300 focus:outline-none focus:ring focus:ring-yellow-300 disabled:cursor-not-allowed"
+            disabled={isSubmmiting}
+          >
+          
+     Whenever you click on button, by default you will see that blue focused line, which does not look good and does not behave properly. that's why we use focus outline-none, we remove the outline first, hen we put focus:ring a custom ring foccus:ring-yellow-300 ring's color, and focus: ring-offset-2 which makes the rong,a 2 bit dittached from the button. 
+     
+     disabled:cursor-not-allowed, when the button is disbaled, this tailwind property make a diable icon when we hover over the button. 
+     
+     
+// positoning
+
+    <div className="absolute inset-0 flex items-center justify-center bg-slate-200/20 backdrop-blur-sm">
+      <div className="loader"></div>
+    </div>
+    
+    
+
+when you postion a certain div absolute, it places over entire canvas. inset-0 makes the height,width, left and right positon index to 0. items-center makes the element verticatly - center  justify-center makes it horizontally center b-slate-200/20 /20 is the opacity of the color and backdrop-blur-sm it blurs the background.
+
+
+//adding the custom tailwind CSS inside .css file.
+
+in order to do that you must write that CSS in
+
+@layer components {
+ 	you write here your custom CSSS
+ 	
+ 	  .loader {
+    width: 45px;
+    aspect-ratio: 0.75;
+    --c: no-repeat linear-gradient(theme(colors.stone.800) 0 0); //theme(colors.stone.800) this is you write tailwind colors in .css file
+    background:
+      var(--c) 0% 50%,
+      var(--c) 50% 50%,
+      var(--c) 100% 50%;
+    background-size: 20% 50%;
+    animation: loading 1s infinite linear;
+  }
+
+
+}
+
+//cusotm font family
+
+You can explitcitly mention, the custom font family size, also you can extend the object and some addiotnal colors or hegiht or something elese properties. This is how you do it,
+
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    fontFamily: {
+      sans: "Roboto Mono, monospace",
+    },
+    extend: {
+      height: {
+        screen: "100dvh",
+      },
+    },
+  },
+  plugins: [],
+};
+
+
+sans is the default array inside the object, of tailwind, where tailwind by defualt injects it in our webpage, hence here we are directly updating the , sans object, with Roboto Mono, hence we do not need to update the fontFamily every where in the Web Application, it is done automatically by tailwind.
+
+
+////study fast react co. project
+
+

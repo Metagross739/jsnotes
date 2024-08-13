@@ -954,6 +954,9 @@ inside <Error /> we
  
 navigate(-1) the -1 takes you to previous page. 
 
+navigation() //state can be either idle, loading or submitting.
+useNavigation() // it generally returns an object that has these states.
+
 &larr; previous arrow and &rarr; next arrow.
 
 
@@ -969,6 +972,69 @@ export async function loader({ params }) {
 	const data = await getOrder(params.orderId);
 }
 
+
+//react-router-dom has its own way dealing with middlewares. means while navigating to different pages, we might, need to fetch some data or do some computational work. as these are supoosed to be not done inside these, fucntional componenet. See that's we use normal JS pure functions. But now, since we are using pure function, we do not, have something to navigate, and we cant use hooks, hence we use functions like,
+
+redirect() // to navigate to different pages, directly from pure functions, without using hooks.
+actions: cartOrderAction(), // the action functions are usually used for, updating the backend.// aslo these function are used to handle the <Form> </From> submitted data, it accepts the method property "POST". react-router automatically handles the data and passes it on to the, action functions.
+
+// this is how it's written.
+
+export async function action({ request }) {
+	const formData = await request.formData();
+	console.log(formData);
+	const data = Object.fromEntries(formData);
+	const order = {
+		...data,
+		cart: JSON.parse(data.cart),
+		priority: data.priority === 'on',
+	};
+	console.log(order);
+	const newOrder = await createOrder(order);
+	return redirect(`/order/${newOrder.id}`);
+}
+
+loader: orderloader(), //it'a a middle ware to fetch the data, and also simlutaneously render the component. thisworks in parallel.
+
+
+				{
+					path: '/order/new',
+					element: <CreateOrder />,
+					action: createOrderAction,
+				},
+				
+				
+when, the path is acessed. and the from data is submitted it will be redirect the data to the action function.
+
+
+//Action function to study
+
+export async function action({ request }) {
+	const formData = await request.formData();
+	const data = Object.fromEntries(formData);
+	const order = {
+		...data,
+		cart: JSON.parse(data.cart),
+		priority: data.priority === 'on',
+	};
+	// console.log(order);
+	const errors = {};
+	if (!isValidPhone(order.phone)) {
+		errors.phone = 'Please provide correct phone no.';
+	}
+	if (Object.keys(errors).length > 0) return errors;
+
+	const newOrder = await createOrder(order);
+	return redirect(`/order/${newOrder.id}`);
+}
+
+in order to acess that, erros = {} object inside the functional component, we use another hooks, given by react-router-dom, that auotmatically serves us the error messages obect we create.
+
+const FromErros = useActionData();
+
+then you just acess {FormErros.phone}
+
+useActionData() catches, whatever it is returned and not just erros, keep in mind.
 
 
  
