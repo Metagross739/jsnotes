@@ -1,0 +1,10 @@
+//if you want to update the state on submission and then display it. 
+
+what you can do is, introduce a state variable that updates onChange. But on handleSubmit, we will pass this state variable, to the dispatch(updateName(username)) function to update the state variable userName which will be used globally erverywhere, that way you handle the the compoenent really in an optimised way.
+
+//using defaultValue instead of value in input elements
+
+the issue with specifying value as type to input element, is it makes the element a controlled element and it wants a onchange function(), But thir would be times when you want a placeholder that, just holds the place with certain value that changes dynamically and also no asks for controlled element features like onChange()
+
+
+

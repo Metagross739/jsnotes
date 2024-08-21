@@ -149,4 +149,303 @@ Just like useReducer, we use dispatch function to provide {type, payload} to red
 
 //reduxjs/toolkit
 
-action creators in reducers uing reduxtoolkit accepts only one argument, that's a drawback. Be it is handled using the, 
+action creators in reducers uing reduxtoolkit accepts only one argument, that's a drawback. Be it is handled using the, prepare object.
+
+//structure goes like this
+
+updateInfo : {
+
+	prepare(name, age){
+	
+		return {
+		
+			payload: {
+				name,
+				age,
+			},
+		};
+	},
+	
+	
+	reducer(state,action){
+	
+	   state.name = action.payload;
+	   state.age = action.payload;
+	
+	}
+
+}
+ 
+this is how action creator functions are are written if, their are more than 1 argumnets action creator functions need.
+
+//IMP Redux
+
+  const totalCartQuantity = useSelector((state) =>
+    state.cart.cart.reduce((sum, item) => sum + item.quantity, 0),
+  );
+  
+  
+  the above kind of useSelector computation cannot be done inside the, functional component. it is adivsed by redux team to actually, put these selector computations inside the slice file itself.
+  
+ //these selector computation functions should start from the letter "get"
+ 
+ like "getTotalQuantity"
+ 
+ //IMP alays remember whenever an, Object of a is handled as a state, rememeber you should first know, how to the structure of the object would look like, becuase some data would come from api, and some you have to contrut yourself.
+ 
+ //function MenuItem({ pizza }) {
+  const { id, name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
+
+  const dispatch = useDispatch();
+  function AddItem() {
+    const newItem = {
+      pizzaId: id,
+      name,
+      quantity: 1,
+      unitPrice,
+      totalPrice: unitPrice * 1,
+    };
+    dispatch(addItem(newItem));
+  }
+  
+  //export const getTotalQuantity = (state) =>
+  state.cart.cart.reduce((sum, item) => sum + item.quantity, 0);
+
+export const getTotalPrice = (state) =>
+  state.cart.cart.reduce((sum, item) => sum + item.totalPrice, 0);
+  
+  
+  but these functions might cause a, performance issue in a largescale application.
+  
+  //for this theirs a `reselect` library inside the redux library. try to learn it sometimes.
+  
+  //Study this complex selector function
+  
+  export const getCurrentQuantityById = (id) => (state) => state.cart.cart.find(item => item.pizzaId === id)?. quantity ?? 0;
+  
+  //for better undestanding
+  
+  https://chatgpt.com/c/ea698aba-e433-43d8-bcc5-b48a4bbc3c73
+  
+  //IMP SHIT TO STUDY
+  
+  Great question! Let's dive into why updating the `item` object using `const item` actually results in updating the original state in Redux Toolkit.
+
+### **Understanding the Reference:**
+
+When you execute this line:
+
+```javascript
+const item = state.cart.find((item) => item.pizzaId === action.payload);
+```
+
+- **`state.cart.find(...)`** searches the `cart` array and returns a reference to the object within that array. 
+- The key point here is that `item` is not a new independent object; it is a reference to an existing object within the `state.cart` array.
+
+### **Why This Updates the State:**
+
+1. **Reference vs. Copy**:
+   - **Reference**: When `const item = ...` assigns the result of `.find()` to `item`, it's pointing to the exact same object that exists within `state.cart`. It’s not a new object but rather a reference to the object in the `cart` array.
+   - **Direct Mutation**: When you modify `item.quantity++`, you are modifying the object that `item` references, which is the object inside `state.cart`. Therefore, the original state is updated because the object in the array is directly modified.
+
+2. **Immer's Role**:
+   - **Tracking Mutations**: Redux Toolkit, with Immer, tracks these changes. Even though it appears you are directly mutating the state, Immer intercepts these mutations. It knows that `item` is a part of `state.cart` and marks that part of the state as "dirty" (i.e., changed).
+   - **Creating a New Immutable State**: Behind the scenes, Immer will create a new version of the state with the necessary changes, ensuring the state remains immutable.
+
+### **Simplified Example:**
+
+Imagine this simplified scenario:
+
+```javascript
+let cart = [{ pizzaId: 1, quantity: 2 }, { pizzaId: 2, quantity: 1 }];
+let item = cart.find(item => item.pizzaId === 1);
+
+// At this point, item is a reference to the first object in the cart array:
+item.quantity++;
+
+// The cart array now looks like this:
+console.log(cart); // [{ pizzaId: 1, quantity: 3 }, { pizzaId: 2, quantity: 1 }]
+```
+
+- `item` points to the first object in `cart`. By modifying `item`, you’re actually modifying the object inside `cart`.
+
+### **Key Takeaways:**
+- **References in JavaScript**: When you assign an object from an array (or any data structure) to a variable, that variable holds a reference to the original object, not a copy.
+- **Redux Toolkit & Immer**: Redux Toolkit uses Immer to handle the immutability of the state, which means you can write mutative-looking code, and Immer will ensure that the state remains immutable.
+
+In conclusion, the state is updated because `item` is not a new object but a reference to the original object in `state.cart`. The changes made to `item` directly affect the original object in the state.
+
+
+//How refrences and Copy of objects works
+
+Great question! Let's clarify how methods like `find()`, `filter()`, and `map()` work in JavaScript, especially in terms of whether they return a copy or a reference.
+
+### **1. `.find()` Method:**
+
+- **Purpose**: The `.find()` method is used to search an array and return the **first** element that satisfies the provided testing function.
+  
+- **Return Value**: 
+  - **Reference**: If the element is an object, `.find()` returns a reference to that object in the original array.
+  - **Not a Copy**: It does not create a new object; instead, it gives you a reference to the existing object. This means that if you modify the object returned by `.find()`, you are modifying the object within the original array.
+
+**Example:**
+
+```javascript
+let cart = [{ pizzaId: 1, quantity: 2 }, { pizzaId: 2, quantity: 1 }];
+let item = cart.find(item => item.pizzaId === 1);
+
+// item is a reference to the object { pizzaId: 1, quantity: 2 }
+item.quantity++;
+
+console.log(cart); // [{ pizzaId: 1, quantity: 3 }, { pizzaId: 2, quantity: 1 }]
+```
+
+### **2. `.filter()` Method:**
+
+- **Purpose**: The `.filter()` method creates a new array with all elements that pass the test implemented by the provided function.
+  
+- **Return Value**:
+  - **New Array**: `.filter()` returns a new array containing references to the objects that passed the filter criteria.
+  - **References**: The elements in the new array are references to the same objects in the original array. If you modify an object in the filtered array, it also modifies the object in the original array.
+
+**Example:**
+
+```javascript
+let cart = [{ pizzaId: 1, quantity: 2 }, { pizzaId: 2, quantity: 1 }];
+let filteredCart = cart.filter(item => item.quantity > 1);
+
+// filteredCart is a new array, but it contains references to the original objects
+filteredCart[0].quantity++;
+
+console.log(cart); // [{ pizzaId: 1, quantity: 3 }, { pizzaId: 2, quantity: 1 }]
+```
+
+### **3. `.map()` Method:**
+
+- **Purpose**: The `.map()` method creates a new array populated with the results of calling a provided function on every element in the calling array.
+  
+- **Return Value**:
+  - **New Array**: `.map()` returns a new array. If the function returns objects, they can either be references to the original objects or entirely new objects depending on how the function is written.
+  - **Copies or References**: If you return the original object (e.g., `return item;`), the new array will contain references. If you create a new object in the callback (e.g., `return { ...item, newProperty: value };`), the new array will contain new objects.
+
+**Example with References:**
+
+```javascript
+let cart = [{ pizzaId: 1, quantity: 2 }, { pizzaId: 2, quantity: 1 }];
+let mappedCart = cart.map(item => item);
+
+// mappedCart contains references to the original objects
+mappedCart[0].quantity++;
+
+console.log(cart); // [{ pizzaId: 1, quantity: 3 }, { pizzaId: 2, quantity: 1 }]
+```
+
+**Example with New Objects:**
+
+```javascript
+let cart = [{ pizzaId: 1, quantity: 2 }, { pizzaId: 2, quantity: 1 }];
+let mappedCart = cart.map(item => ({ ...item, quantity: item.quantity * 2 }));
+
+// mappedCart contains new objects
+console.log(cart);       // [{ pizzaId: 1, quantity: 2 }, { pizzaId: 2, quantity: 1 }]
+console.log(mappedCart); // [{ pizzaId: 1, quantity: 4 }, { pizzaId: 2, quantity: 2 }]
+```
+
+### **Summary:**
+- **`.find()`**: Returns a reference to the found object, not a copy.
+- **`.filter()`**: Returns a new array of references to the original objects.
+- **`.map()`**: Returns a new array, which can either contain references to the original objects or new objects depending on how the mapping function is written.
+
+So when you use `find()`, `filter()`, or `map()`, the behavior depends on whether you return references or create new objects inside your callback function.
+
+
+//while passing the, selector function to useSelector only pass it's name if theris no, argument to be passed.
+// const cart = useSelector(getCart);
+
+  //As We cannot call useDispatch() inside the pure functions as it is a hook
+  //hence this is, a sneeky trick but don't use it, regularly for optimization concerns.
+  
+  store.dispatch(clearCart());
+  
+  
+//STUDY THE CODE AND STRATEGY
+
+        <div>
+          //see, here along wiht order data, we also want to send items added to cart and user location data. so this is a trick to do that.
+          <input type="hidden" name="cart" value={JSON.stringify(cart)} />
+          <input
+            type="hidden"
+            name="postion"
+            value={
+              position.longitude
+                ? `${position.latitude}, ${position.longitude}`
+                : ""
+            }
+          />
+          <Button type="primary" disabled={isSubmmiting || isLoading}>
+            {isSubmmiting
+              ? "Placing order"
+              : `Order now ${formatCurrency(totalPrice)}`}
+          </Button>
+        </div>
+
+
+//All the form and hidden field data goes here
+
+export async function action({ request }) {
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData);
+  const order = {
+    ...data,
+    cart: JSON.parse(data.cart),
+    priority: data.priority === "true",
+  };
+  // console.log(order);
+  const errors = {};
+  if (!isValidPhone(order.phone)) {
+    errors.phone = "Please provide correct phone no.";
+  }
+  if (Object.keys(errors).length > 0) return errors;
+
+  const newOrder = await createOrder(order);
+
+  //As We cannot call useDispatch() inside the pure functions as it is a hook
+  //hence this is, a sneeky trick but don't use it, regularly for optimization concerns.
+  store.dispatch(clearCart());
+  return redirect(`/order/${newOrder.id}`);
+}	
+
+
+// Learn and do Learn ways of handling froms, with the help of react-router-dom
+
+import React from "react";
+import Button from "../../UI/Button";
+import { useFetcher } from "react-router-dom";
+import { updateOrder } from "../../Services/apiRestaurant";
+
+function UpdateOrder({ order }) {
+  const fetcher = useFetcher();
+  return (
+    <fetcher.Form method="PATCH" className="text-right">
+      <Button type={"primary"}>Make Priority</Button>
+    </fetcher.Form>
+  );
+}
+
+export default UpdateOrder;
+
+export async function action({ request, params }) {
+  const data = { priority: true };
+  await updateOrder(params.orderId, data);
+  return null;
+}
+
+// const fetcher = useFetcher(); fetcher brings you the data from them page, without navigating to it, it brings it from action and loader functon. it is done using fethcer.load("/menu").
+
+//in the above code it is also used for, submitting the Form, as we havent maintined any priority state gloabally or any other state variable, its an object properity sent to backend while, placing the order. on createnewOrder/new page.
+
+//now the question is, how do we update the priority in backend. that's when <fetcher.Form></fetcher.Form> you can directly use <Form> from react-router but theirs a problem with, this plain <Form> tag, it actiually causes the navigation, although in an controlled manner, but it still does cause navigation to the next page. to avoid this use <fetcher.Form></fetcher.Form> learn more about these. on Chatgpt.
+
+//IMP Learn how to handle forms, using react-router and formik.
+
+   
